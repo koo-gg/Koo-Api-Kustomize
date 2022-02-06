@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-koo-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dev-koo-api
+  template:
+    metadata:
+      labels:
+        app: dev-koo-api
+    spec:
+      containers:
+        - name: dev-koo-api
+          image: koogg/dev-koo-api:latest
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 20    # wait 20 sec before perform first probe
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 5
